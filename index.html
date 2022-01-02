@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+<head>
+    <meta charset="UTF-8">
+    <title>Lidar data in 3D</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</head>
+
+<body class="d-flex h-100 text-center text-white bg-dark">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js "></script>
+
+    <script src="./dist/points.js"></script>
+
+    <!-- <img crossorigin="anonymous" src="./data.jpg" width="256" height="16"> -->
+
+    <script>
+        let image = new POINTS.ARENA3DImage('./data/image.jpg');
+        let scene = new POINTS.Record3DScene(60, 1e-4, 1e5);
+        scene.runloop();
+        scene.addImage(image);
+    </script>
+</body>
+</html>
