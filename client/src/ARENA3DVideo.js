@@ -1,38 +1,14 @@
 import * as THREE from 'three';
-import {PointCloudShaderMaterial} from './PointCloudShaderMaterial';
-import {RenderingMode} from './constants'
+import {ARENA3DStream} from './ARENA3DStream';
 
-export class ARENA3DVideo
+export class ARENA3DVideo extends ARENA3DStream
 {
-    constructor(videoSource)
+    constructor(source)
     {
-        this.videoSource = null;
-        this.videoTexture = null;
-        this.videoObject = new THREE.Group();
-        this.renderingMode = RenderingMode.POINTS;
-        this.material = PointCloudShaderMaterial.create();
-        this.setVideoSource(videoSource);
+        super(source);
     }
 
-    setVideoSource(videoSource)
-    {
-        if ( videoSource !== this.videoSource ) {
-            this.videoSource = videoSource;
-
-            let self = this;
-            videoSource.onVideoChange = () => {
-                self.onVideoTagChanged();
-            };
-        }
-
-        if ( videoSource.isVideoLoaded ) {
-            this.onVideoTagChanged();
-        }
-
-        this.switchRenderingTo(this.renderingMode);
-    }
-
-    onVideoTagChanged()
+    onSourceChanged()
     {
         let videoSource = this.videoSource;
 
@@ -57,124 +33,5 @@ export class ARENA3DVideo
         this.material.uniforms.iK.value = [ifx, ify, itx, ity];
 
         this.switchRenderingTo(this.renderingMode)
-    }
-
-    switchRenderingTo(renderingMode) {
-        this.renderingMode = renderingMode;
-        if ( this.renderingMode === RenderingMode.MESH ) {
-            this.switchRenderingToMesh();
-
-        } else if ( this.renderingMode === RenderingMode.POINTS ) {
-            this.switchRenderingToPoints();
-
-        } else {
-            console.error('Invalid rendering mode.');
-        }
-    }
-
-    removeVideoObjectChildren() {
-        while (this.videoObject.children.length > 0)
-        {
-            this.videoObject.remove(this.videoObject.children[0]);
-        }
-    }
-
-    switchRenderingToPoints()
-    {
-        this.removeVideoObjectChildren();
-
-        let videoSize = this.videoSource.getVideoSize();
-        let numPoints = videoSize.width * videoSize.height;
-
-        this.buffIndices = new Uint32Array(numPoints);
-        this.buffPointIndicesAttr = new Float32Array(numPoints);
-
-        for ( let ptIdx = 0; ptIdx < numPoints; ptIdx++ )
-        {
-            this.buffIndices[ptIdx] = ptIdx;
-            this.buffPointIndicesAttr[ptIdx] = parseFloat(ptIdx);
-        }
-
-        let geometry = new THREE.BufferGeometry();
-        geometry.setAttribute('vertexIdx', new THREE.Float32BufferAttribute(this.buffPointIndicesAttr, 1));
-        geometry.setIndex(new THREE.Uint32BufferAttribute(new Uint32Array(this.buffIndices), 1));
-
-        let points = new THREE.Points(geometry, this.material);
-        points.frustumCulled = false;
-        this.videoObject.add(points);
-    }
-
-    switchRenderingToMesh()
-    {
-        this.removeVideoObjectChildren();
-
-        let videoSize = this.videoSource.getVideoSize();
-        if ( videoSize.width === 0 || videoSize.height === 0 ) {
-            return;
-        }
-
-        let numPoints = videoSize.width * videoSize.height;
-        this.buffIndices = new Uint32Array( (videoSize.width - 1) * (videoSize.height - 1) * 6 );
-        this.buffPointIndicesAttr = new Float32Array(numPoints);
-
-        for ( let ptIdx = 0; ptIdx < numPoints; ptIdx++ )
-        {
-            this.buffPointIndicesAttr[ptIdx] = parseFloat(ptIdx);
-        }
-
-        var indicesIdx = 0;
-        let numRows = videoSize.height;
-        let numCols = videoSize.width;
-        for ( let row = 1; row < numRows; row++ ) {
-            for ( let col = 0; col < numCols - 1; col++ ) {
-                let tlIdx = (row - 1) * numCols + col;
-                let trIdx = tlIdx + 1;
-
-                let blIdx = row * numCols + col;
-                let brIdx = blIdx + 1;
-
-                this.buffIndices[indicesIdx++] = blIdx;
-                this.buffIndices[indicesIdx++] = trIdx;
-                this.buffIndices[indicesIdx++] = tlIdx;
-
-                this.buffIndices[indicesIdx++] = blIdx;
-                this.buffIndices[indicesIdx++] = brIdx;
-                this.buffIndices[indicesIdx++] = trIdx;
-            }
-        }
-
-        let geometry = new THREE.BufferGeometry();
-        geometry.setAttribute('vertexIdx', new THREE.Float32BufferAttribute(this.buffPointIndicesAttr, 1));
-        geometry.setIndex(new THREE.Uint32BufferAttribute(new Uint32Array(this.buffIndices), 1));
-
-        let mesh = new THREE.Mesh(geometry, this.material);
-        mesh.frustumCulled = false;
-        this.videoObject.add(mesh);
-
-        console.log(this.material.uniforms.texSize.value)
-    }
-
-    toggle()
-    {
-        this.videoSource.toggle();
-    }
-
-    toggleSound()
-    {
-        this.videoSource.toggleAudio();
-    }
-
-    setScale(scale)
-    {
-        for (let video of this.videoObject.children) {
-            video.material.uniforms.scale.value = scale;
-        }
-    }
-
-    setPointSize(ptSize)
-    {
-        for (let video of this.videoObject.children) {
-            video.material.uniforms.ptSize.value = ptSize;
-        }
     }
 }

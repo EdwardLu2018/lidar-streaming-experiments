@@ -38,10 +38,10 @@ export class PtCloudViewerScene
             modelScale: 1.0,
             modelPointSize: 1.0,
             toggleMeshPoints: () => {
-                for (let image of self.pointClouds) {
-                    let newRenderingMode = image.renderingMode === RenderingMode.MESH ?
+                for (let ptCloud of self.pointClouds) {
+                    let newRenderingMode = ptCloud.renderingMode === RenderingMode.MESH ?
                                                 RenderingMode.POINTS : RenderingMode.MESH;
-                    image.switchRenderingTo(newRenderingMode);
+                    ptCloud.switchRenderingTo(newRenderingMode);
                 }
             }
         };
@@ -68,7 +68,7 @@ export class PtCloudViewerScene
     addStream(lidarStream)
     {
         this.pointClouds.push(lidarStream);
-        this.mainScene.add(lidarStream.imageObject);
+        this.mainScene.add(lidarStream.object3D);
     }
 
     runloop()
