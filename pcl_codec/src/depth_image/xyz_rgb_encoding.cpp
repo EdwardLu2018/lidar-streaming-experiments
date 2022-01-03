@@ -1,11 +1,11 @@
 #include <cmath>    // for coordinate transform (e.g. atan2, asin, etc.)
 
-// OpenCV for loading image, extracting image color and visualization 
+// OpenCV for loading image, extracting image color and visualization
 // Use libjpeg as alternative
 // PCL Visualizer for point cloud visualization only
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
-// #include <pcl/visualization/pcl_visualizer.h>
+#include <pcl/visualization/pcl_visualizer.h>
 
 // PCL lib for loading and processing point cloud
 #include <pcl/io/pcd_io.h>
@@ -39,7 +39,7 @@ int PIXEL_SHIFT_BY_ROW_64[64] = {86,6,85,8,84,9,84,11,83,12,83,13,82,14,82,15,81
 
 
 // convert the point cloud data to range image
-void pcl_to_image(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud, 
+void pcl_to_image(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud,
                 uint8_t xyz_rgb_image[LIDAR_VER_RES][LIDAR_HOR_RES][3], bool is_xyz) {
     if (is_xyz) {
         // put xyz coordinates into left half of image
@@ -97,8 +97,8 @@ void shift_pixel(uint8_t image[LIDAR_VER_RES][LIDAR_HOR_RES][3]) {
 }
 
 // Horizontally stitch the xyz and bgr image
-void stitch_image(uint8_t xyz_image[LIDAR_VER_RES][LIDAR_HOR_RES][3], 
-                    uint8_t bgr_image[LIDAR_VER_RES][LIDAR_HOR_RES][3], 
+void stitch_image(uint8_t xyz_image[LIDAR_VER_RES][LIDAR_HOR_RES][3],
+                    uint8_t bgr_image[LIDAR_VER_RES][LIDAR_HOR_RES][3],
                     uint8_t xyz_bgr_image[LIDAR_VER_RES][XYZ_BGR_HOR_RES][3]) {
     for (int i = 0; i < LIDAR_VER_RES; i++) {
         for (int j = 0; j < LIDAR_HOR_RES; j++) {
@@ -170,16 +170,16 @@ void color_pcl(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud, Mat rgb_image) {
 }
 
 // Init point cloud visualizer
-// pcl::visualization::PCLVisualizer::Ptr visualize_pcl(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud) {
-//     pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer ("3D Viewer"));
-//     viewer->setBackgroundColor(0, 0, 0);
-//     viewer->addPointCloud<pcl::PointXYZRGB>(cloud, "cloud");
-//     viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, VISUALIZE_POINT_SIZE, "cloud");
-//     viewer->addCoordinateSystem(1.0);
-//     viewer->initCameraParameters();
+pcl::visualization::PCLVisualizer::Ptr visualize_pcl(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud) {
+    pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer ("3D Viewer"));
+    viewer->setBackgroundColor(0, 0, 0);
+    viewer->addPointCloud<pcl::PointXYZRGB>(cloud, "cloud");
+    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, VISUALIZE_POINT_SIZE, "cloud");
+    viewer->addCoordinateSystem(1.0);
+    viewer->initCameraParameters();
 
-//     return viewer;
-// }
+    return viewer;
+}
 
 int main(int argc, char **argv) {
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZRGB>);
