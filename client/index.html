@@ -28,14 +28,14 @@
             }
         );
         let stream = new POINTS.ARENA3DStream(mqttStream);
-        let scene = new POINTS.Record3DScene(60, 1e-4, 1e5);
+        let scene = new POINTS.PtCloudViewerScene(60, 1e-4, 1e5);
         scene.runloop();
-        scene.addImage(stream);
+        scene.addStream(stream);
 
         // let image = new POINTS.ARENA3DImage('../server/data/image0.jpg');
-        // let scene = new POINTS.Record3DScene(60, 1e-4, 1e5);
+        // let scene = new POINTS.PtCloudViewerScene(60, 1e-4, 1e5);
         // scene.runloop();
-        // scene.addImage(image);
+        // scene.addStream(image);
     </script>
 </body>
 </html>

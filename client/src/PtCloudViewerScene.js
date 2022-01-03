@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {RenderingMode} from './constants'
 
-export class Record3DScene
+export class PtCloudViewerScene
 {
     constructor(fov, near, far)
     {
@@ -65,10 +65,10 @@ export class Record3DScene
         gui.add(this.options, 'toggleMeshPoints').name('Render points/mesh');
     }
 
-    addImage(lidarImage)
+    addStream(lidarStream)
     {
-        this.pointClouds.push(lidarImage);
-        this.mainScene.add(lidarImage.imageObject);
+        this.pointClouds.push(lidarStream);
+        this.mainScene.add(lidarStream.imageObject);
     }
 
     runloop()

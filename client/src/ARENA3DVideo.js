@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {PointCloudShaderMaterial} from './PointCloudShaderMaterial';
 import {RenderingMode} from './constants'
 
-export class Record3DVideo
+export class ARENA3DVideo
 {
     constructor(videoSource)
     {
