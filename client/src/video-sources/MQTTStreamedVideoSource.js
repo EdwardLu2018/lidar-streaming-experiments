@@ -1,9 +1,7 @@
 import * as Paho from 'paho-mqtt';
 
-export class MQTTStreamedVideoSource
-{
-    constructor(host, port, handler)
-    {
+export class MQTTStreamedVideoSource {
+    constructor(host, port, handler) {
         // error numbers
         this.NOERROR = 0;
         this.WEBSOCKET_FAILURE = -1;

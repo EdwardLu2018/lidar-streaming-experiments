@@ -5,15 +5,13 @@ varying float vShouldDiscard;
 uniform ivec2 texSize;
 uniform sampler2D texImg;
 
-void main()
-{
+void main() {
     vec2 frameSizeF = vec2(texSize.x / 2, texSize.y);
     ivec2 frameSize = ivec2(frameSizeF);
 
     int vertIdx = int(vVertexIdx);
     int actualNumPts = frameSize.x * frameSize.y;
-    if ( vShouldDiscard != 0.0 || vertIdx >= actualNumPts )
-    {
+    if ( vShouldDiscard != 0.0 || vertIdx >= actualNumPts ) {
         discard;
     }
 

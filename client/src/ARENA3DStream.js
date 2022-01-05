@@ -2,50 +2,46 @@ import * as THREE from 'three';
 import {PointCloudShaderMaterial} from './PointCloudShaderMaterial';
 import {RenderingMode} from './constants'
 
-export class ARENA3DStream
-{
-    constructor(streamSource)
-    {
-        this.streamSource = null;
-        this.streamTexture = null;
-        this.imgWidth = 4096;
-        this.imgHeight = 128;
-        this.imageObject = new THREE.Group();
+export class ARENA3DStream {
+    constructor(source) {
+        this.source = null;
+        this.texture = null;
+        this.width = 4096;
+        this.height = 128;
+        this.object3D = new THREE.Group();
         this.renderingMode = RenderingMode.POINTS;
         this.material = PointCloudShaderMaterial.create();
-        this.setSource(streamSource);
+        this.setSource(source);
     }
 
-    setSource(streamSource)
-    {
-        if ( streamSource !== this.streamSource ) {
-            this.streamSource = streamSource;
-            this.onStreamChanged();
+    setSource(source) {
+        if ( source !== this.source ) {
+            this.source = source;
+            this.onSourceChanged();
         }
 
         this.switchRenderingTo(this.renderingMode);
     }
 
-    onStreamChanged()
-    {
+    onSourceChanged() {
         let _this = this;
-        this.streamSource.data_handler = function (data) {
+        this.source.data_handler = function (data) {
             console.log("Updating texture...");
 
-            const texture = new THREE.DataTexture( data, _this.imgWidth, _this.imgHeight, THREE.RGBFormat );
+            const texture = new THREE.DataTexture( data, _this.width, _this.height, THREE.RGBFormat );
             texture.needsUpdate = true;
 
-            _this.streamTexture = texture;
+            _this.texture = texture;
 
-            // _this.imgWidth = texture.stream.width;
-            // _this.imgHeight = texture.stream.height;
+            // _this.width = texture.stream.width;
+            // _this.height = texture.stream.height;
 
-            _this.streamTexture.minFilter = THREE.LinearFilter;
-            _this.streamTexture.magFilter = THREE.LinearFilter;
-            _this.streamTexture.format = THREE.RGBFormat;
+            _this.texture.minFilter = THREE.LinearFilter;
+            _this.texture.magFilter = THREE.LinearFilter;
+            _this.texture.format = THREE.RGBFormat;
 
-            _this.material.uniforms.texSize.value = [_this.imgWidth, _this.imgHeight];
-            _this.material.uniforms.texImg.value = _this.streamTexture;
+            _this.material.uniforms.texSize.value = [_this.width, _this.height];
+            _this.material.uniforms.texImg.value = _this.texture;
 
             _this.switchRenderingTo(_this.renderingMode);
             // console.log(_this.material.uniforms.texSize.value);
@@ -65,24 +61,21 @@ export class ARENA3DStream
         }
     }
 
-    removeImageObjectChildren() {
-        while (this.imageObject.children.length > 0)
-        {
-            this.imageObject.remove(this.imageObject.children[0]);
+    removeObject3DChildren() {
+        while (this.object3D.children.length > 0) {
+            this.object3D.remove(this.object3D.children[0]);
         }
     }
 
-    switchRenderingToPoints()
-    {
-        this.removeImageObjectChildren();
+    switchRenderingToPoints() {
+        this.removeObject3DChildren();
 
-        let numPoints = this.imgWidth * this.imgHeight;
+        let numPoints = this.width * this.height;
 
         this.buffIndices = new Uint32Array(numPoints);
         this.buffPointIndicesAttr = new Float32Array(numPoints);
 
-        for ( let ptIdx = 0; ptIdx < numPoints; ptIdx++ )
-        {
+        for ( let ptIdx = 0; ptIdx < numPoints; ptIdx++ ) {
             this.buffIndices[ptIdx] = ptIdx;
             this.buffPointIndicesAttr[ptIdx] = parseFloat(ptIdx);
         }
@@ -93,25 +86,23 @@ export class ARENA3DStream
 
         let points = new THREE.Points(geometry, this.material);
         points.frustumCulled = false;
-        this.imageObject.add(points);
+        this.object3D.add(points);
     }
 
-    switchRenderingToMesh()
-    {
-        this.removeImageObjectChildren();
+    switchRenderingToMesh() {
+        this.removeObject3DChildren();
 
-        let numPoints = this.imgWidth * this.imgHeight;
-        this.buffIndices = new Uint32Array( (this.imgWidth - 1) * (this.imgHeight - 1) * 6 );
+        let numPoints = this.width * this.height;
+        this.buffIndices = new Uint32Array( (this.width - 1) * (this.height - 1) * 6 );
         this.buffPointIndicesAttr = new Float32Array(numPoints);
 
-        for ( let ptIdx = 0; ptIdx < numPoints; ptIdx++ )
-        {
+        for ( let ptIdx = 0; ptIdx < numPoints; ptIdx++ ) {
             this.buffPointIndicesAttr[ptIdx] = parseFloat(ptIdx);
         }
 
         var indicesIdx = 0;
-        let numRows = this.imgWidth;
-        let numCols = this.imgHeight;
+        let numRows = this.width;
+        let numCols = this.height;
         for ( let row = 1; row < numRows; row++ ) {
             for ( let col = 0; col < numCols - 1; col++ ) {
                 let tlIdx = (row - 1) * numCols + col;
@@ -136,19 +127,17 @@ export class ARENA3DStream
 
         let mesh = new THREE.Mesh(geometry, this.material);
         mesh.frustumCulled = false;
-        this.imageObject.add(mesh);
+        this.object3D.add(mesh);
     }
 
-    setScale(scale)
-    {
-        for (let stream of this.imageObject.children) {
+    setScale(scale) {
+        for (let stream of this.object3D.children) {
             stream.material.uniforms.scale.value = scale;
         }
     }
 
-    setPointSize(ptSize)
-    {
-        for (let stream of this.imageObject.children) {
+    setPointSize(ptSize) {
+        for (let stream of this.object3D.children) {
             stream.material.uniforms.ptSize.value = ptSize;
         }
     }

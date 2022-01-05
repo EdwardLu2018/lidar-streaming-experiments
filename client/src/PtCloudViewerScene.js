@@ -2,10 +2,8 @@ import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {RenderingMode} from './constants'
 
-export class PtCloudViewerScene
-{
-    constructor(fov, near, far)
-    {
+export class PtCloudViewerScene {
+    constructor(fov, near, far) {
         let self = this;
         this.mainScene = new THREE.Scene();
         this.renderer = new THREE.WebGLRenderer();
@@ -38,10 +36,10 @@ export class PtCloudViewerScene
             modelScale: 1.0,
             modelPointSize: 1.0,
             toggleMeshPoints: () => {
-                for (let image of self.pointClouds) {
-                    let newRenderingMode = image.renderingMode === RenderingMode.MESH ?
+                for (let ptCloud of self.pointClouds) {
+                    let newRenderingMode = ptCloud.renderingMode === RenderingMode.MESH ?
                                                 RenderingMode.POINTS : RenderingMode.MESH;
-                    image.switchRenderingTo(newRenderingMode);
+                    ptCloud.switchRenderingTo(newRenderingMode);
                 }
             }
         };
@@ -65,28 +63,23 @@ export class PtCloudViewerScene
         gui.add(this.options, 'toggleMeshPoints').name('Render points/mesh');
     }
 
-    addStream(lidarStream)
-    {
+    addStream(lidarStream) {
         this.pointClouds.push(lidarStream);
-        this.mainScene.add(lidarStream.imageObject);
+        this.mainScene.add(lidarStream.object3D);
     }
 
-    runloop()
-    {
+    runloop() {
         this.renderer.render(this.mainScene, this.camera);
         requestAnimationFrame(() => this.runloop());
     }
 
-    toggleSound()
-    {
-        for (let ptCloud of this.pointClouds)
-        {
+    toggleSound() {
+        for (let ptCloud of this.pointClouds) {
             ptCloud.toggleAudio();
         }
     }
 
-    resizeRendererToDisplaySize()
-    {
+    resizeRendererToDisplaySize() {
         // https://threejsfundamentals.org/threejs/lessons/threejs-responsive.html
         const canvas = this.renderer.domElement;
         const width = canvas.clientWidth;
@@ -98,8 +91,7 @@ export class PtCloudViewerScene
         return needResize;
     }
 
-    onWindowResize(event)
-    {
+    onWindowResize(event) {
         if (this.resizeRendererToDisplaySize(this.renderer)) {
             const canvas = this.renderer.domElement;
             this.camera.aspect = canvas.clientWidth / canvas.clientHeight;
