@@ -20,7 +20,7 @@
 
     <script>
         let mqttStream = new POINTS.MQTTStreamedVideoSource(
-            window.location.hostname, 9001,
+            "localhost", 9001,
             function(msg) {
                 console.log(msg);
             }

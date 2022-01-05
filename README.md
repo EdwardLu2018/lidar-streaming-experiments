@@ -1,10 +1,15 @@
 # Lidar Streaming Test Repo
 
 ## How to use:
-### Running the server
+### Running the broker (TODO: eventually use a public MQTT broker)
 ```
 cd server
 sh run_mqtt.sh      # start mqtt broker
+```
+
+### Running the server
+```
+cd server
 python3 server.py   # start python server (as of now, just switches between two point clouds)
 ```
 
