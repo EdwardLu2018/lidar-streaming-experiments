@@ -1,10 +1,8 @@
 import * as THREE from 'three';
 import {Record3DSignalingClient} from './SignalingClient';
 
-export class WiFiStreamedVideoSource
-{
-    constructor(deviceAddress)
-    {
+export class WiFiStreamedVideoSource {
+    constructor(deviceAddress) {
         this.peerAddress = deviceAddress;
         this.intrMat = null;
         this.videoTag = document.createElement('video');
@@ -34,10 +32,8 @@ export class WiFiStreamedVideoSource
         };
     }
 
-    connect()
-    {
-        if (this.peerConnection !== null)
-        {
+    connect() {
+        if (this.peerConnection !== null) {
             this.peerConnection.close();
         }
 
@@ -80,8 +76,7 @@ export class WiFiStreamedVideoSource
     }
 
     updateVideoResolution() {
-        if ( this.videoTag.videoWidth != this.lastVideoSize.width || this.videoTag.videoHeight != this.lastVideoSize.height )
-        {
+        if ( this.videoTag.videoWidth != this.lastVideoSize.width || this.videoTag.videoHeight != this.lastVideoSize.height ) {
             Record3DSignalingClient.getMetadata(this.peerAddress)
                 .then(metadata => this.processMetadata(metadata));
         }
@@ -94,24 +89,20 @@ export class WiFiStreamedVideoSource
         return {width: this.lastVideoSize.width / 2, height: this.lastVideoSize.height};
     }
 
-    toggle()
-    {
+    toggle() {
         if ( this.videoTag.paused ) this.videoTag.play();
         else this.videoTag.pause();
     }
 
-    toggleAudio()
-    {
+    toggleAudio() {
         this.videoTag.muted = !this.videoTag.muted;
     }
 
-    updateIntrinsicMatrix(intrMat)
-    {
+    updateIntrinsicMatrix(intrMat) {
         this.intrMat = intrMat;
     }
 
-    processIntrMat(origIntrMatElements, origVideoSize)
-    {
+    processIntrMat(origIntrMatElements, origVideoSize) {
         let intrMat = new THREE.Matrix3();
         intrMat.elements = origIntrMatElements;
         intrMat.transpose();
@@ -126,8 +117,7 @@ export class WiFiStreamedVideoSource
         return intrMat;
     }
 
-    processMetadata(metadata)
-    {
+    processMetadata(metadata) {
         let ogVideoSizeKey = 'originalSize';
         if (ogVideoSizeKey in metadata) {
             let originalVideoSize = metadata[ogVideoSizeKey];

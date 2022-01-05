@@ -1,15 +1,12 @@
 import * as THREE from 'three';
 import {ARENA3DStream} from './ARENA3DStream';
 
-export class ARENA3DImage extends ARENA3DStream
-{
-    constructor(source)
-    {
+export class ARENA3DImage extends ARENA3DStream {
+    constructor(source) {
         super(source);
     }
 
-    onSourceChanged()
-    {
+    onSourceChanged() {
         let _this = this;
         const loader = new THREE.TextureLoader();
         loader.load(this.source,

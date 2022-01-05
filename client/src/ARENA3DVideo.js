@@ -1,15 +1,12 @@
 import * as THREE from 'three';
 import {ARENA3DStream} from './ARENA3DStream';
 
-export class ARENA3DVideo extends ARENA3DStream
-{
-    constructor(source)
-    {
+export class ARENA3DVideo extends ARENA3DStream {
+    constructor(source) {
         super(source);
     }
 
-    onSourceChanged()
-    {
+    onSourceChanged() {
         let videoSource = this.videoSource;
 
         this.videoTexture = new THREE.VideoTexture( videoSource.videoTag );

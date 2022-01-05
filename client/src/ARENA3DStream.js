@@ -2,10 +2,8 @@ import * as THREE from 'three';
 import {PointCloudShaderMaterial} from './PointCloudShaderMaterial';
 import {RenderingMode} from './constants'
 
-export class ARENA3DStream
-{
-    constructor(source)
-    {
+export class ARENA3DStream {
+    constructor(source) {
         this.source = null;
         this.texture = null;
         this.width = 4096;
@@ -16,8 +14,7 @@ export class ARENA3DStream
         this.setSource(source);
     }
 
-    setSource(source)
-    {
+    setSource(source) {
         if ( source !== this.source ) {
             this.source = source;
             this.onSourceChanged();
@@ -26,8 +23,7 @@ export class ARENA3DStream
         this.switchRenderingTo(this.renderingMode);
     }
 
-    onSourceChanged()
-    {
+    onSourceChanged() {
         let _this = this;
         this.source.data_handler = function (data) {
             console.log("Updating texture...");
@@ -66,14 +62,12 @@ export class ARENA3DStream
     }
 
     removeObject3DChildren() {
-        while (this.object3D.children.length > 0)
-        {
+        while (this.object3D.children.length > 0) {
             this.object3D.remove(this.object3D.children[0]);
         }
     }
 
-    switchRenderingToPoints()
-    {
+    switchRenderingToPoints() {
         this.removeObject3DChildren();
 
         let numPoints = this.width * this.height;
@@ -81,8 +75,7 @@ export class ARENA3DStream
         this.buffIndices = new Uint32Array(numPoints);
         this.buffPointIndicesAttr = new Float32Array(numPoints);
 
-        for ( let ptIdx = 0; ptIdx < numPoints; ptIdx++ )
-        {
+        for ( let ptIdx = 0; ptIdx < numPoints; ptIdx++ ) {
             this.buffIndices[ptIdx] = ptIdx;
             this.buffPointIndicesAttr[ptIdx] = parseFloat(ptIdx);
         }
@@ -96,16 +89,14 @@ export class ARENA3DStream
         this.object3D.add(points);
     }
 
-    switchRenderingToMesh()
-    {
+    switchRenderingToMesh() {
         this.removeObject3DChildren();
 
         let numPoints = this.width * this.height;
         this.buffIndices = new Uint32Array( (this.width - 1) * (this.height - 1) * 6 );
         this.buffPointIndicesAttr = new Float32Array(numPoints);
 
-        for ( let ptIdx = 0; ptIdx < numPoints; ptIdx++ )
-        {
+        for ( let ptIdx = 0; ptIdx < numPoints; ptIdx++ ) {
             this.buffPointIndicesAttr[ptIdx] = parseFloat(ptIdx);
         }
 
@@ -139,15 +130,13 @@ export class ARENA3DStream
         this.object3D.add(mesh);
     }
 
-    setScale(scale)
-    {
+    setScale(scale) {
         for (let stream of this.object3D.children) {
             stream.material.uniforms.scale.value = scale;
         }
     }
 
-    setPointSize(ptSize)
-    {
+    setPointSize(ptSize) {
         for (let stream of this.object3D.children) {
             stream.material.uniforms.ptSize.value = ptSize;
         }
