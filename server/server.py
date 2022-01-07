@@ -24,25 +24,29 @@ class LidarStream(threading.Thread):
 
     def run(self):
         data_dir = 'data'
+        images = []
+        for filename in os.listdir(data_dir):
+            image = cv2.imread(data_dir + "/" + filename)
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+            resized = np.copy(image.reshape(-1,))
+            idx = 0
+            for i in range(image.shape[0]):
+                for j in range(image.shape[1]):
+                    resized[idx] = image[i][j][0]
+                    idx = idx + 1
+                    resized[idx] = image[i][j][1]
+                    idx = idx + 1
+                    resized[idx] = image[i][j][2]
+                    idx = idx + 1
+
+            images += [resized]
+
         while self.running:
-            for filename in os.listdir(data_dir):
-                image = cv2.imread(data_dir + "/" + filename)
-                image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
-                chunk = np.copy(image.reshape(-1,))
-                idx = 0
-                for i in range(image.shape[0]):
-                    for j in range(image.shape[1]):
-                        chunk[idx] = image[i][j][0]
-                        idx = idx + 1
-                        chunk[idx] = image[i][j][1]
-                        idx = idx + 1
-                        chunk[idx] = image[i][j][2]
-                        idx = idx + 1
-
-                print("Sending", chunk.size, "bytes to", self.topic, time.time())
-                # chunk = base64.b64encode(chunk)
-                self.client.publish(self.topic, payload=bytearray(chunk))
+            for image in images:
+                print("Sending", image.size, "bytes to", self.topic, time.time())
+                # image = base64.b64encode(image)
+                self.client.publish(self.topic, payload=bytearray(image))
                 time.sleep(1)
 
 stream = None
@@ -65,7 +69,7 @@ def _on_message(client, userdata, msg):
     if msg.topic == "lidartest/client/describe":
         req = json.loads(msg.payload.decode())
         reply = {
-            "mimeCodec": 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"',
+            "mimeCodec": "custom rgbd codec",
             "error": ""
         }
 
@@ -75,10 +79,9 @@ def _on_message(client, userdata, msg):
     elif msg.topic == "lidartest/client/play":
         req = json.loads(msg.payload.decode())
 
-        if stream is not None:
-            stream.stop()
-        stream = LidarStream(client, req['resp_topic'])
-        stream.start()
+        if stream is None:
+            stream = LidarStream(client, "lidartest/stream")
+            stream.start()
 
     elif msg.topic == "lidartest/client/stop":
         req = json.loads(msg.payload.decode())

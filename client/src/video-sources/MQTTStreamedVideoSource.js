@@ -18,9 +18,9 @@ export class MQTTStreamedVideoSource {
         this.mqtt_handlers = {};
         this.data_handler = null;
 
-        this.hostURI = 'wss://' + hostname;
-        console.log("Connecting to", this.hostURI);
-        this.clientId = "client" + parseInt(Math.random());
+        this.hostURI = "wss://" + hostname;
+        this.clientId = "client" + parseInt(Math.random() * 1000000000);
+        console.log(this.clientId, "connecting to", this.hostURI);
         this.client = new Paho.Client(this.hostURI, this.clientId);
 
         this.handler = handler;
@@ -114,8 +114,8 @@ export class MQTTStreamedVideoSource {
         var mimeCodec = jobj['mimeCodec'];
         console.log(mimeCodec);
 
-        var video_topic = "video_" + parseInt(Math.random() * 1000000000);
-        this._register_cb(video_topic, function( message ) {
+        var lidarTopic = "lidartest/stream";
+        this._register_cb(lidarTopic, function( message ) {
             // console.log( message.payloadBytes );
             if (_this.data_handler) {
                 _this.data_handler(message.payloadBytes);
@@ -126,7 +126,7 @@ export class MQTTStreamedVideoSource {
         // tell server to play video
         this._publish(this.TOPICS.PLAY, {
             clientId: _this.clientId,
-            resp_topic: video_topic
+            resp_topic: lidarTopic
         });
 
         return false; // remove after single use.
