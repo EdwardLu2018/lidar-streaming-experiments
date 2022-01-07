@@ -30,17 +30,17 @@ class LidarStream(threading.Thread):
                 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
                 chunk = np.copy(image.reshape(-1,))
-                it = 0
+                idx = 0
                 for i in range(image.shape[0]):
                     for j in range(image.shape[1]):
-                        chunk[it] = image[i][j][0]
-                        it = it + 1
-                        chunk[it] = image[i][j][1]
-                        it = it + 1
-                        chunk[it] = image[i][j][2]
-                        it = it + 1
+                        chunk[idx] = image[i][j][0]
+                        idx = idx + 1
+                        chunk[idx] = image[i][j][1]
+                        idx = idx + 1
+                        chunk[idx] = image[i][j][2]
+                        idx = idx + 1
 
-                print("Sending", chunk.size, "bytes to", self.topic, image.shape)
+                print("Sending", chunk.size, "bytes to", self.topic, time.time())
                 # chunk = base64.b64encode(chunk)
                 self.client.publish(self.topic, payload=bytearray(chunk))
                 time.sleep(1)
@@ -48,7 +48,7 @@ class LidarStream(threading.Thread):
 stream = None
 
 def on_connect(client, userdata, flags, rc):
-    client.subscribe("client/#")
+    client.subscribe("lidartest/client/#")
     print("Connected!")
 
 def on_message(client, userdata, msg):
@@ -62,7 +62,7 @@ def _on_message(client, userdata, msg):
 
     print(msg.topic, ":", str(msg.payload))
 
-    if msg.topic == "client/describe":
+    if msg.topic == "lidartest/client/describe":
         req = json.loads(msg.payload.decode())
         reply = {
             "mimeCodec": 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"',
@@ -72,7 +72,7 @@ def _on_message(client, userdata, msg):
         print("Sending reply", req['resp_topic'])
         client.publish(req['resp_topic'], payload=json.dumps(reply))
 
-    elif msg.topic == "client/play":
+    elif msg.topic == "lidartest/client/play":
         req = json.loads(msg.payload.decode())
 
         if stream is not None:
@@ -80,16 +80,22 @@ def _on_message(client, userdata, msg):
         stream = LidarStream(client, req['resp_topic'])
         stream.start()
 
-    elif msg.topic == "client/stop":
+    elif msg.topic == "lidartest/client/stop":
         req = json.loads(msg.payload.decode())
 
         stream.stop()
 
-client = mqtt.Client("server0", clean_session=True, transport="websockets")
+hostname = "arenaxr.org"
+username = "cli"
+password = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJjbGkiLCJzdWJzIjpbIiMiXSwicHVibCI6WyIjIl0sImlhdCI6MTYzMTU1MjY0OSwiZXhwIjoxNjYzMDg4NjQ5fQ.epRhjujjMjolLR6-dEGlF109BedpuAg_1y81HLZ6ZeNnIx8AawCadlxhmJV79TS30fqaTHzuGUzuKzzifTChouqwZTn6Nrb96iObEIIfp0KYpxnL1rnOx3qu1QTdQ9p2cffwuBo8YhS5my5NozW34VAJsRk1y2VwPW0oj4sk4kn198m3GIetI86-wrk92-e2LdzXVh5b5pAPvOdh5p0WrMLt-xO4rpi_xX_Zxjd1Z6C6gnRAG-Nc0UelYIHgkBIn_VdeEdyRvHDOQVhL07w8WpqonpinT37RTNbk5dsal-3H1AjHrd1DIAWRffvEYtOrKInsYyDgpxOciEv6Hx3zKp3ekskRTo2GfUH03EFiJy9vjrhHhF7oSaNxp5nl7EB1wBQxVeg6bgobhX6xUrG_8GuSxX6dXZCCt0pujwj9KZb_4y5KBfYCDpf2pd0uYvZ3WimXGwd_S9XgRu6vVdIWs65B_alIMWfhgxLcw-2FM33JFXx3_eGCiBu0XrbM6pdB86rx1VYiWgFFrvaMhNZfOqxup5w7QMRhY9eWTub7iUr5NYKhCnVkZx9i8V0uFZFasSgy4bhLqLdmZBWnMMHuoCUMYLfTw0RHHBpt010Q2k5JB-2l_qeRz1IJ0sMc91R69Cvm6LLBjIy4AYwCAc7NWxKNAbYI7PEwUAMjylMGJrc"
+
+client = mqtt.Client("server0", clean_session=True)
 client.on_connect = on_connect
 client.on_message = on_message
 
-client.connect("localhost", port=9001, keepalive=60)
+client.tls_set()
+client.username_pw_set(username=username, password=password)
+client.connect(hostname, port=8883, keepalive=60)
 
 # Blocking call that processes network traffic, dispatches callbacks and
 # handles reconnecting.
