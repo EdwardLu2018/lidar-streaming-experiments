@@ -19,21 +19,10 @@
     <script src="./dist/points.js"></script>
 
     <script>
-        let mqttStream = new POINTS.MQTTStreamedVideoSource(
-            "arenaxr.org/mqtt/",
-            function(msg) {
-                console.log(msg);
-            }
-        );
-        let stream = new POINTS.ARENA3DStream(mqttStream);
+        let image = new POINTS.ARENA3DImage('https://1dfb-2603-9000-7b06-d76d-25ed-96c6-3533-46e.ngrok.io/lidarstream');
         let scene = new POINTS.PtCloudViewerScene(60, 1e-4, 1e5);
         scene.runloop();
-        scene.addStream(stream);
-
-        // let image = new POINTS.ARENA3DImage('../server/data/image0.jpg');
-        // let scene = new POINTS.PtCloudViewerScene(60, 1e-4, 1e5);
-        // scene.runloop();
-        // scene.addStream(image);
+        scene.addStream(image);
     </script>
 </body>
 </html>
