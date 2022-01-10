@@ -17,8 +17,10 @@ def gen(camera):
 @app.route('/lidarstream')
 def video_feed():
     """Video streaming route. Put this in the src attribute of an img tag."""
-    return Response(gen(Camera()),
+    response = Response(gen(Camera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', threaded=True)
