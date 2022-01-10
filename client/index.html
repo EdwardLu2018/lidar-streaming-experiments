@@ -16,13 +16,7 @@
 <body class="d-flex h-100 text-center text-white bg-dark">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js "></script>
 
-    <script src="./dist/points.js"></script>
-
-    <script>
-        let image = new POINTS.ARENA3DImage('http://192.168.1.157:5000/lidarstream');
-        let scene = new POINTS.PtCloudViewerScene(60, 1e-4, 1e5);
-        scene.runloop();
-        scene.addStream(image);
-    </script>
+    <script src="dist/points.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>

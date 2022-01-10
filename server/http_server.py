@@ -2,6 +2,7 @@ from flask import Flask, render_template, Response
 from camera import Camera
 
 app = Flask(__name__)
+# app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 300
 
 # @app.route('/')
 # def index():
@@ -20,6 +21,7 @@ def video_feed():
     response = Response(gen(Camera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
     response.headers.add('Access-Control-Allow-Origin', '*')
+    # response.headers.add('Cache-Control', 'no-cache, no-store, must-revalidate')
     return response
 
 if __name__ == '__main__':
