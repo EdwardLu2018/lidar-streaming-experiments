@@ -19,7 +19,7 @@
     <script src="./dist/points.js"></script>
 
     <script>
-        let image = new POINTS.ARENA3DImage('https://79b9-2603-9000-7b06-d76d-25ed-96c6-3533-46e.ngrok.io/lidarstream');
+        let image = new POINTS.ARENA3DImage('http://192.168.1.157:5000/lidarstream');
         let scene = new POINTS.PtCloudViewerScene(60, 1e-4, 1e5);
         scene.runloop();
         scene.addStream(image);

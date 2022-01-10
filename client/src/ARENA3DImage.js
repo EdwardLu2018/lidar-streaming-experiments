@@ -18,7 +18,6 @@ export class ARENA3DImage extends ARENA3DStream {
             console.log("Loaded texture!");
             var texture = new THREE.Texture(this.image);
             texture.needsUpdate = true;
-
             _this.texture = texture;
 
             _this.width = texture.image.width;
