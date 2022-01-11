@@ -3,8 +3,9 @@ import {PointCloudShaderMaterial} from './PointCloudShaderMaterial';
 import {RenderingMode} from './constants'
 
 export class ARENA3DStream {
-    constructor(source) {
+    constructor(source, stats) {
         this.source = null;
+        this.stats = stats;
         this.texture = null;
         this.width = 4096;
         this.height = 128;

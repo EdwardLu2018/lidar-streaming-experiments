@@ -2,8 +2,8 @@ import * as THREE from 'three';
 import {ARENA3DStream} from './ARENA3DStream';
 
 export class ARENA3DImage extends ARENA3DStream {
-    constructor(source) {
-        super(source);
+    constructor(source, stats) {
+        super(source, stats);
     }
 
     onSourceChanged() {
@@ -15,10 +15,11 @@ export class ARENA3DImage extends ARENA3DStream {
 
             let _this = this;
             setInterval(() => {
-                if (_this.image) {
+                if (_this.texture) {
                     _this.texture.needsUpdate = true;
+                    _this.stats.update();
                 }
-            }, 100);
+            }, 20);
 
             this.image.onload = () => {
                 // console.log("Loaded texture!");
