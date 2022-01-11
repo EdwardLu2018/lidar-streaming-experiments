@@ -2,8 +2,12 @@
 .cache/
 .vscode/
 
-.DS_Store
-
 node_modules/
 build/
 pcl_codec/pcd_uncompressed/
+
+.DS_Store
+
+__pycache__/
+*.py[cod]
+*$py.class

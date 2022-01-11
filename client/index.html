@@ -11,29 +11,15 @@
 
     <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://threejs.org/examples/js/libs/stats.min.js"></script>
 </head>
 
 <body class="d-flex h-100 text-center text-white bg-dark">
+    <div id="stats"></div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js "></script>
 
-    <script src="./dist/points.js"></script>
-
-    <script>
-        let mqttStream = new POINTS.MQTTStreamedVideoSource(
-            "arenaxr.org/mqtt/",
-            function(msg) {
-                console.log(msg);
-            }
-        );
-        let stream = new POINTS.ARENA3DStream(mqttStream);
-        let scene = new POINTS.PtCloudViewerScene(60, 1e-4, 1e5);
-        scene.runloop();
-        scene.addStream(stream);
-
-        // let image = new POINTS.ARENA3DImage('../server/data/image0.jpg');
-        // let scene = new POINTS.PtCloudViewerScene(60, 1e-4, 1e5);
-        // scene.runloop();
-        // scene.addStream(image);
-    </script>
+    <script src="dist/points.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>

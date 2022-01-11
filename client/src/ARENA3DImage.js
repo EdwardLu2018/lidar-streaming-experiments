@@ -2,17 +2,29 @@ import * as THREE from 'three';
 import {ARENA3DStream} from './ARENA3DStream';
 
 export class ARENA3DImage extends ARENA3DStream {
-    constructor(source) {
-        super(source);
+    constructor(source, stats) {
+        super(source, stats);
     }
 
     onSourceChanged() {
-        let _this = this;
-        const loader = new THREE.TextureLoader();
-        loader.load(this.source,
-            // onLoad callback
-            function (texture) {
-                console.log("Loaded texture!");
+        if (this.image === undefined) {
+            this.image = new Image();
+            this.image.crossOrigin = "";
+            this.image.src = this.source;
+            // document.body.appendChild(this.image);
+
+            let _this = this;
+            setInterval(() => {
+                if (_this.texture) {
+                    _this.texture.needsUpdate = true;
+                    _this.stats.update();
+                }
+            }, 20);
+
+            this.image.onload = () => {
+                // console.log("Loaded texture!");
+                var texture = new THREE.Texture(_this.image);
+                texture.needsUpdate = true;
                 _this.texture = texture;
 
                 _this.width = texture.image.width;
@@ -26,14 +38,7 @@ export class ARENA3DImage extends ARENA3DStream {
                 _this.material.uniforms.texImg.value = _this.texture;
 
                 _this.switchRenderingTo(_this.renderingMode);
-            },
-
-            // onProgress callback currently not supported
-            undefined,
-
-            // onError callback
-            function (err) {
-                console.error("failed to load texture!", err);
-            });
+            }
+        }
     }
 }
