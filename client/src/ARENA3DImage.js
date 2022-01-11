@@ -17,14 +17,13 @@ export class ARENA3DImage extends ARENA3DStream {
             setInterval(() => {
                 if (_this.texture) {
                     _this.texture.needsUpdate = true;
-                    _this.stats.update();
+                    if (_this.stats) _this.stats.update();
                 }
-            }, 20);
+            }, 50);
 
             this.image.onload = () => {
                 // console.log("Loaded texture!");
                 var texture = new THREE.Texture(_this.image);
-                texture.needsUpdate = true;
                 _this.texture = texture;
 
                 _this.width = texture.image.width;

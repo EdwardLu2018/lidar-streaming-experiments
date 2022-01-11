@@ -34,8 +34,8 @@ export class ARENA3DStream {
 
             _this.texture = texture;
 
-            // _this.width = texture.stream.width;
-            // _this.height = texture.stream.height;
+            // _this.width = texture.image.width;
+            // _this.height = texture.image.height;
 
             _this.texture.minFilter = THREE.LinearFilter;
             _this.texture.magFilter = THREE.LinearFilter;
@@ -47,7 +47,7 @@ export class ARENA3DStream {
             _this.switchRenderingTo(_this.renderingMode);
             // console.log(_this.material.uniforms.texSize.value);
 
-            _this.stats.update();
+            if (_this.stats) _this.stats.update();
         }
     }
 

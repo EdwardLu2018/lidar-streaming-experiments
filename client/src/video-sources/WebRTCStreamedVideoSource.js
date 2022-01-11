@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {Record3DSignalingClient} from './SignalingClient';
 
-export class WiFiStreamedVideoSource {
+export class WebRTCStreamedVideoSource {
     constructor(deviceAddress) {
         this.peerAddress = deviceAddress;
         this.intrMat = null;
