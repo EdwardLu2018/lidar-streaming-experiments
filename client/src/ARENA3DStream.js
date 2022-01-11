@@ -46,6 +46,8 @@ export class ARENA3DStream {
 
             _this.switchRenderingTo(_this.renderingMode);
             // console.log(_this.material.uniforms.texSize.value);
+
+            _this.stats.update();
         }
     }
 
