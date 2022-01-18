@@ -9,15 +9,13 @@ app = Flask(__name__)
 #     return render_template('index.html')
 
 def gen(camera):
-    """Video streaming generator function."""
     while True:
         frame = camera.get_frame()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 @app.route('/lidarstream')
-def video_feed():
-    """Video streaming route. Put this in the src attribute of an img tag."""
+def lidar_stream():
     response = Response(gen(Camera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
     response.headers.add('Access-Control-Allow-Origin', '*')

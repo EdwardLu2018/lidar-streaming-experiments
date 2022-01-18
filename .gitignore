@@ -1,6 +1,7 @@
 .idea/
 .cache/
 .vscode/
+venv/
 
 node_modules/
 build/
