@@ -47,7 +47,7 @@ class LidarStream(threading.Thread):
                 print("Sending", image.size, "bytes to", self.topic, time.time())
                 # image = base64.b64encode(image)
                 self.client.publish(self.topic, payload=bytearray(image))
-                time.sleep(0.01)
+                time.sleep(0.05)
 
 stream = None
 

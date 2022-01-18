@@ -9,6 +9,8 @@ class Camera(BaseCamera):
 
     @staticmethod
     def frames():
+        i = 0
         while True:
-            yield Camera.imgs[int(time.time()) % 2]
+            yield Camera.imgs[i % 2]
             time.sleep(0.05)
+            i = i + 1
