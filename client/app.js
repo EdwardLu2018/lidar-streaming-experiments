@@ -1,7 +1,7 @@
 const USE_MQTT = false;
 
 const MQTT_HOST = 'arenaxr.org/mqtt/';
-const HTTP_HOST = 'http://192.168.1.157:5000/lidarstream';
+const HTTP_HOST = 'https://arena-dev1.conix.io:8001/image/lidarstream';
 
 let stats = new Stats();
 stats.showPanel(0);
