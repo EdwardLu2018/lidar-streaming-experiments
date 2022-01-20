@@ -18,9 +18,9 @@ def gen(camera):
 def lidar_stream():
     response = Response(gen(Camera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
-    response.headers.add('Access-Control-Allow-Origin', '*')
+    # response.headers.add('Access-Control-Allow-Origin', '*')
     # response.headers.add('Cache-Control', 'no-cache, no-store, must-revalidate')
     return response
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', threaded=True)
+    app.run(host='0.0.0.0', port=8000, threaded=True)
