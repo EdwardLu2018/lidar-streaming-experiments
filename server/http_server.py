@@ -9,10 +9,10 @@ app = Flask(__name__)
 #     return render_template('index.html')
 
 def gen(camera):
+    yield b'--frame\r\n'
     while True:
         frame = camera.get_frame()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+        yield b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n--frame\r\n'
 
 @app.route('/lidarstream')
 def lidar_stream():
@@ -23,4 +23,4 @@ def lidar_stream():
     return response
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000, threaded=True)
+    app.run(host='0.0.0.0', threaded=True)
