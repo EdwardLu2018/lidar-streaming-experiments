@@ -72,12 +72,12 @@ void main() {
         return;
     }
 
-    vec3 ptPos = scale * getPixelXYZ(pt);
-    // vec3 ptPos = scale * vec3(
-    //     0.01*float(ptX),
-    //     0.01*float(ptY),
-    //     -1.0
-    // );
+    // vec3 ptPos = scale * getPixelXYZ(pt);
+    vec3 ptPos = scale * vec3(
+        0.01*float(ptX),
+        0.01*float(ptY),
+        -1.0
+    );
 
     vec4 mvPos = modelViewMatrix * vec4(ptPos, 1.0);
     gl_Position = projectionMatrix * mvPos;

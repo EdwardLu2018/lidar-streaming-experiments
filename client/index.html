@@ -12,9 +12,12 @@
     <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://threejs.org/examples/js/libs/stats.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 
 <body class="d-flex h-100 text-center text-white bg-dark">
+    <video id="video" width="480" autoplay="true" type='application/x-mpegURL' style="display: none;"></video>
+
     <div id="stats"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js "></script>
