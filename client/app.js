@@ -40,5 +40,5 @@ if (Hls.isSupported()) {
 
 let video = new POINTS.ARENA3DVideo(videoTag, stats);
 let scene = new POINTS.PtCloudViewerScene(60, 1e-4, 1e5);
-scene.runloop();
+scene.runloop(stats);
 scene.addStream(video);

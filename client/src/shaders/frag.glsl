@@ -15,7 +15,7 @@ void main() {
         discard;
     }
 
-    vec2 lookupPt = vec2(vPtPos.x + frameSizeF.x, vPtPos.y) / vec2(texSize);
+    vec2 lookupPt = vec2(vPtPos.x, vPtPos.y) / vec2(texSize);
     vec3 currColor = texture2D(texImg, lookupPt).rgb;
 
     gl_FragColor = vec4(currColor, 1.0);

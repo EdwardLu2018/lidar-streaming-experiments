@@ -68,9 +68,10 @@ export class PtCloudViewerScene {
         this.mainScene.add(lidarStream.object3D);
     }
 
-    runloop() {
+    runloop(stats) {
         this.renderer.render(this.mainScene, this.camera);
-        requestAnimationFrame(() => this.runloop());
+        if (stats) stats.update();
+        requestAnimationFrame(() => this.runloop(stats));
     }
 
     toggleSound() {
