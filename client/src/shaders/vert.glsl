@@ -14,21 +14,20 @@ uniform float ptSize;
 // Filtering constants
 const int filterSize = 1;
 const float distThresholdFilter = 1.0;
+const float s = 256.0; // 2^8
 
 
-vec3 getPixelXYZ(ivec2 pixel) {
+float getPixelDepth(ivec2 pixel) {
     vec2 lookupPt = vec2(pixel) / vec2(texSize);
-    vec3 rgb = texture2D(texImg, lookupPt).rgb;
-    vec3 xyz = ((255.0 * rgb) - 128.0) / 9.0;
+    vec3 depthRGB = 255.0 * texture2D(texImg, lookupPt).rgb;
 
-    return -xyz;
-    // return vec3(xyz[0], xyz[1], xyz[2]);
+    float depth = (depthRGB.g * s) + depthRGB.b; // (g << 8) + b
+    return depth * 0.001;
 }
 
 bool shouldDiscard(ivec2 currPixel) {
 #if FILTER
-    vec3 pt3D = getPixelXYZ(currPixel);
-    float avgDistance = 0.0;
+    float avgDepth = getPixelDepth(currPixel);
     int num = 0;
 
     for ( int i = -filterSize; i <= filterSize; i++ )
@@ -36,12 +35,12 @@ bool shouldDiscard(ivec2 currPixel) {
             if ( i == 0 && j == 0 )
                 continue;
 
-            vec3 currPt3D = getPixelXYZ(currPixel + ivec2(j, i));
-            avgDistance += distance(currPt3D, pt3D);
+            float currDepth = getPixelDepth(currPixel + ivec2(j, i));
+            avgDepth += currDepth;
             num++;
         }
 
-    if (avgDistance / float(num) > distThresholdFilter) {
+    if (avgDepth / float(num) > distThresholdFilter) {
         return true;
     }
 #endif
@@ -64,7 +63,7 @@ void main() {
 
     int ptY = vertIdx / int(frameSize.x);
     int ptX = vertIdx - ptY * int(frameSize.x);
-    ivec2 pt = ivec2(ptX, ptY);
+    ivec2 pt = ivec2(ptX + frameSize.x, ptY);
 
     if ( shouldDiscard( pt ) ) {
         vShouldDiscard = 1.0;
@@ -72,12 +71,12 @@ void main() {
         return;
     }
 
-    vec3 ptPos = scale * getPixelXYZ(pt);
-    // vec3 ptPos = scale * vec3(
-    //     0.01*float(ptX),
-    //     0.01*float(ptY),
-    //     -1.0
-    // );
+    float depth = 50.0 * getPixelDepth(pt);
+    vec3 ptPos = 0.0002 * scale * vec3(
+        float(ptX) - float(frameSize.x / 2),
+        float(ptY) - float(frameSize.y / 2),
+        -depth
+    );
 
     vec4 mvPos = modelViewMatrix * vec4(ptPos, 1.0);
     gl_Position = projectionMatrix * mvPos;
