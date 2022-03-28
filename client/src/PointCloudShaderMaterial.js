@@ -7,7 +7,8 @@ export class PointCloudShaderMaterial {
 
         return new THREE.ShaderMaterial({
             uniforms: {
-                texImg: { type: 't', value: new THREE.Texture() },
+                texImgRGB: { type: 't', value: new THREE.Texture() },
+                texImgD: { type: 't', value: new THREE.Texture() },
                 texSize: { type: 'i2', value: [0, 0] },
                 scale: { type: 'f', value: 1.0 },
                 ptSize: { type: 'f', value: 1.0 },

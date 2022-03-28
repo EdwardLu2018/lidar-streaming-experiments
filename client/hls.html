@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Live Cam</title>
+  <title>HLS Stream</title>
 </head>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <body>
-  <video id="video" width="720" autoplay="true" controls="controls" type='application/x-mpegURL'></video>
+  <video id="video" width="720" controls autoplay="1" crossorigin="anonymous" playsinline="1" type="application/x-mpegURL"></video>
   <script>
+    const URL = "https://arena-dev1.conix.io/dev/lidar_rgb/hls/stream.m3u8";
+    var video = document.getElementById("video");
     if (Hls.isSupported()) {
-      var video = document.getElementById('video');
       var hls = new Hls();
-      // bind them together
+      hls.loadSource(URL);
       hls.attachMedia(video);
-      hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-        console.log("video and hls.js are now bound together !");
-        hls.loadSource("https://arena-dev1.conix.io/dev/lidartest/hls/stream.m3u8");
-        hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-        });
+      hls.on(Hls.Events.MANIFEST_PARSED, function() {
+      });
+    }
+    else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      video.src = URL;
+      video.addEventListener("loadedmetadata", function() {
       });
     }
   </script>
