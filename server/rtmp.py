@@ -7,13 +7,10 @@ rtmp_url_rgb = "rtmp://localhost:1935/lidar_rgb/stream_rgb"
 rtmp_url_d = "rtmp://localhost:1935/lidar_rgb/stream_d"
 
 rgb_ims = []
-for i in range(100):
-    if i != 38:
-        rgb_ims += [cv2.imread(f"rgb_d_images/{i}_rgb.png")]
-
 d_ims = []
 for i in range(100):
     if i != 38:
+        rgb_ims += [cv2.imread(f"rgb_d_images/{i}_rgb.png")]
         d_ims += [cv2.imread(f"rgb_d_images/{i}_depth.png")]
 
 # gather video info to ffmpeg
