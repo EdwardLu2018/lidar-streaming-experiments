@@ -1,19 +1,24 @@
+import os
 import time
-import ffmpeg
 import cv2
 import subprocess
 
-rtmp_url = "rtmp://localhost:1935/lidar/stream"
+rtmp_url_rgb = "rtmp://localhost:1935/lidar_rgb/stream_rgb"
+rtmp_url_d = "rtmp://localhost:1935/lidar_rgb/stream_d"
 
-im1 = cv2.imread("data/rgbd0.png")
-im2 = cv2.imread("data/rgbd1.png")
-im3 = cv2.imread("data/rgbd2.png")
-im4 = cv2.imread("data/rgbd3.png")
-ims = [im1, im2, im3, im4]
+rgb_ims = []
+for i in range(100):
+    if i != 38:
+        rgb_ims += [cv2.imread(f"rgb_d_images/{i}_rgb.png")]
+
+d_ims = []
+for i in range(100):
+    if i != 38:
+        d_ims += [cv2.imread(f"rgb_d_images/{i}_depth.png")]
 
 # gather video info to ffmpeg
 fps = 30
-height, width, _ = im1.shape
+height, width, _ = rgb_ims[0].shape
 print(width, height)
 
 # command and params for ffmpeg
@@ -29,10 +34,12 @@ command = ['ffmpeg',
            '-pix_fmt', 'yuv420p',
            '-preset', 'ultrafast',
            '-f', 'flv',
-           rtmp_url]
+           rtmp_url_rgb]
 
 # using subprocess and pipe to fetch frame data
 process = subprocess.Popen(command, stdin=subprocess.PIPE)
+command[-1] = rtmp_url_d
+process2 = subprocess.Popen(command, stdin=subprocess.PIPE)
 
 # process = (
 #     ffmpeg
@@ -45,10 +52,12 @@ process = subprocess.Popen(command, stdin=subprocess.PIPE)
 
 i = 0
 while True:
-    frame = ims[i % len(ims)]
+    frame_rgb = rgb_ims[i % len(rgb_ims)]
+    frame_d = d_ims[i % len(d_ims)]
 
     # write to pipe
-    process.stdin.write(frame.tobytes())
+    process.stdin.write(frame_rgb.tobytes())
+    process2.stdin.write(frame_d.tobytes())
 
     i += 1
 

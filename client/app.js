@@ -1,59 +1,83 @@
-// const USE_MQTT = false;
 
-// const MQTT_HOST = 'arenaxr.org/mqtt/';
-// const HTTP_HOST = 'https://arena-dev1.conix.io:8001/image/lidarstream';
-
-let stats = new Stats();
-stats.showPanel(0);
-document.getElementById("stats").appendChild(stats.domElement);
-
-// if (USE_MQTT) {
-//     let mqttStream = new POINTS.MQTTStreamedVideoSource(
-//         MQTT_HOST,
-//         function(msg) {
-//             console.log(msg);
-//         }
-//     );
-//     let stream = new POINTS.ARENA3DStream(mqttStream, stats);
-//     let scene = new POINTS.PtCloudViewerScene(60, 1e-4, 1e5);
-//     scene.runloop();
-//     scene.addStream(stream);
-// }
-// else {
-//     let image = new POINTS.ARENA3DImage(HTTP_HOST, stats);
-//     let scene = new POINTS.PtCloudViewerScene(60, 1e-4, 1e5);
-//     scene.runloop();
-//     scene.addStream(image);
-// }
-
-var videoTag = document.getElementById('video');
-var videoTag2 = document.getElementById('video2');
 const URL_RGB = "https://arena-dev1.conix.io/dev/lidar_rgb/hls/stream_rgb.m3u8";
 const URL_D = "https://arena-dev1.conix.io/dev/lidar_rgb/hls/stream_d.m3u8";
+
+var readyCntr = 0;
+const startEvent = new CustomEvent('start', {
+    detail: {}
+});
+
+var videoTagRGB = document.getElementById("video_rgb");
+var videoTagD = document.getElementById("video_d");
 if (Hls.isSupported()) {
-    var hls = new Hls();
-    hls.loadSource(URL_RGB);
-    hls.attachMedia(videoTag);
-    hls.on(Hls.Events.MANIFEST_PARSED, function() {
+    var hlsRGB = new Hls();
+    hlsRGB.loadSource(URL_RGB);
+    hlsRGB.attachMedia(videoTagRGB);
+    hlsRGB.on(Hls.Events.MANIFEST_PARSED, function() {
+        window.dispatchEvent(startEvent);
     });
 
-    var hls2 = new Hls();
-    hls2.loadSource(URL_D);
-    hls2.attachMedia(videoTag2);
-    hls2.on(Hls.Events.MANIFEST_PARSED, function() {
+    var hlsD = new Hls();
+    hlsD.loadSource(URL_D);
+    hlsD.attachMedia(videoTagD);
+    hlsD.on(Hls.Events.MANIFEST_PARSED, function() {
+        window.dispatchEvent(startEvent);
+    });
+
+    videoTagRGB.addEventListener("loadedmetadata", function() {
+        window.dispatchEvent(startEvent);
+    });
+
+    videoTagD.addEventListener("loadedmetadata", function() {
+        window.dispatchEvent(startEvent);
     });
 }
-else if (videoTag.canPlayType("application/vnd.apple.mpegurl")) {
-    videoTag.src = URL_RGB;
-    videoTag.addEventListener("loadedmetadata", function() {
+else if (videoTagRGB.canPlayType("application/vnd.apple.mpegurl")) {
+    videoTagRGB.src = URL_RGB;
+    videoTagRGB.addEventListener("loadedmetadata", function() {
+        window.dispatchEvent(startEvent);
     });
 
-    videoTag2.src = URL_D;
-    videoTag2.addEventListener("loadedmetadata", function() {
+    videoTagD.src = URL_D;
+    videoTagD.addEventListener("loadedmetadata", function() {
+        window.dispatchEvent(startEvent);
     });
 }
 
-let video = new POINTS.ARENA3DVideo2(videoTag, videoTag2, stats);
-let scene = new POINTS.PtCloudViewerScene(60, 1e-4, 1e5);
-scene.runloop(stats);
-scene.addStream(video);
+window.addEventListener("start", function() {
+    readyCntr++;
+    if (readyCntr < 4) return;
+    console.log("Started!");
+
+    const sceneEl = document.querySelector("a-scene");
+
+    const videoElRGB = document.createElement("a-entity");
+    videoElRGB.setAttribute("geometry", "primitive", "plane");
+    videoElRGB.setAttribute("rotation.order", "YXZ");
+    videoElRGB.setAttribute("id", "rgb");
+    videoElRGB.setAttribute("scale", "4 2.25 0.01");
+    videoElRGB.setAttribute("position", "-8 5 -6");
+    videoElRGB.setAttribute("material", "shader: flat; side: double");
+    videoElRGB.setAttribute("muted", "false");
+    videoElRGB.setAttribute("autoplay", "true");
+    videoElRGB.setAttribute("playsinline", "true");
+    videoElRGB.setAttribute("material", "src", "#video_rgb");
+    sceneEl.appendChild(videoElRGB);
+
+    const videoElD = document.createElement("a-entity");
+    videoElD.setAttribute("geometry", "primitive", "plane");
+    videoElD.setAttribute("rotation.order", "YXZ");
+    videoElD.setAttribute("id", "depth");
+    videoElD.setAttribute("scale", "4 2.25 0.01");
+    videoElD.setAttribute("position", "8 5 -6");
+    videoElD.setAttribute("material", "shader: flat; side: double");
+    videoElD.setAttribute("muted", "false");
+    videoElD.setAttribute("autoplay", "true");
+    videoElD.setAttribute("playsinline", "true");
+    videoElD.setAttribute("material", "src", "#video_d");
+    sceneEl.appendChild(videoElD);
+
+    let video = new POINTS.ARENA3DVideo(videoTagRGB, videoTagD, new THREE.Vector3(0, 2, -5));
+    let scene = new POINTS.PtCloudViewerScene();
+    scene.addStream(video);
+});

@@ -6,24 +6,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
 
-    <link rel="stylesheet" href="css/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/style.css" />
-
-    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script src="https://threejs.org/examples/js/libs/stats.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js "></script>
+    <script src="dist/points.js"></script>
 </head>
 
 <body class="d-flex h-100 text-center text-white bg-dark">
-    <video id="video" width="480" controls autoplay="1" crossorigin="anonymous" playsinline="1" type="application/x-mpegURL" style="display: none;"></video>
-    <video id="video2" width="480" controls autoplay="1" crossorigin="anonymous" playsinline="1" type="application/x-mpegURL" style="display: none;"></video>
-
     <div id="stats"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js "></script>
+    <video
+        id="video_rgb"
+        width="480"
+        controls
+        autoplay="1"
+        crossorigin="anonymous"
+        playsinline="1"
+        type="application/x-mpegURL"
+        style="display: none;">
+    </video>
+    <video
+        id="video_d"
+        width="480"
+        controls
+        autoplay="1"
+        crossorigin="anonymous"
+        playsinline="1"
+        type="application/x-mpegURL"
+        style="display: none;">
+    </video>
 
-    <script src="dist/points.js"></script>
+    <a-scene background="color: gray">
+        <!-- <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
+        <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
+        <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+        <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+        <a-sky color="#ECECEC"></a-sky> -->
+
+        <a-camera far="10000" id="my-camera"
+                          look-controls="reverseMouseDrag: true"
+                          look-controls-arrow
+                          mouse-cursor near="0.1"
+                          wasd-controls="fly: true; acceleration: 30;">
+                    <a-entity cursor="rayOrigin: mouse" id="mouse-cursor"
+                              raycaster="objects:[click-listener],[click-listener-local]"></a-entity>
+        </a-camera>
+    </a-scene>
+
     <script src="app.js"></script>
 </body>
 </html>
