@@ -1,5 +1,6 @@
 import {PtCloudViewerScene} from './PtCloudViewerScene';
 import {ARENA3DVideo} from './ARENA3DVideo';
+import {ARENA3DVideo2} from './ARENA3DVideo2';
 import {ARENA3DImage} from './ARENA3DImage';
 import {ARENA3DStream} from './ARENA3DStream';
 import {MQTTStreamedVideoSource} from './video-sources/MQTTStreamedVideoSource';
@@ -10,6 +11,7 @@ export {
     PtCloudViewerScene,
 
     ARENA3DVideo,
+    ARENA3DVideo2,
     ARENA3DImage,
     ARENA3DStream,
 

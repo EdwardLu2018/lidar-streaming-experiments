@@ -18,6 +18,9 @@ export class PtCloudViewerScene {
         // Camera control settings
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         this.controls.enableZoom = true;
+        this.controls.listenToKeyEvents(window);
+        this.controls.keyPanSpeed = 50.0;
+        this.controls.keys = { LEFT: 'KeyA', UP: 'KeyW', RIGHT: 'KeyD', BOTTOM: 'KeyS' };
         this.controls.update();
 
         this.pointClouds = [];
