@@ -15,6 +15,7 @@ if (Hls.isSupported()) {
     hlsRGB.attachMedia(videoTagRGB);
     hlsRGB.on(Hls.Events.MANIFEST_PARSED, function() {
         window.dispatchEvent(startEvent);
+        videoTagRGB.pause();
     });
 
     var hlsD = new Hls();
@@ -22,15 +23,16 @@ if (Hls.isSupported()) {
     hlsD.attachMedia(videoTagD);
     hlsD.on(Hls.Events.MANIFEST_PARSED, function() {
         window.dispatchEvent(startEvent);
+        videoTagD.pause();
     });
 
-    videoTagRGB.addEventListener("loadedmetadata", function() {
+    videoTagRGB.onloadedmetadata = function() {
         window.dispatchEvent(startEvent);
-    });
+    }
 
-    videoTagD.addEventListener("loadedmetadata", function() {
+    videoTagD.onloadedmetadata = function() {
         window.dispatchEvent(startEvent);
-    });
+    }
 }
 else if (videoTagRGB.canPlayType("application/vnd.apple.mpegurl")) {
     videoTagRGB.src = URL_RGB;
@@ -49,35 +51,45 @@ window.addEventListener("start", function() {
     if (readyCntr < 4) return;
     console.log("Started!");
 
-    const sceneEl = document.querySelector("a-scene");
+    setTimeout(() => {
+        videoTagRGB.play();
+        videoTagD.play();
 
-    const videoElRGB = document.createElement("a-entity");
-    videoElRGB.setAttribute("geometry", "primitive", "plane");
-    videoElRGB.setAttribute("rotation.order", "YXZ");
-    videoElRGB.setAttribute("id", "rgb");
-    videoElRGB.setAttribute("scale", "4 2.25 0.01");
-    videoElRGB.setAttribute("position", "-8 5 -6");
-    videoElRGB.setAttribute("material", "shader: flat; side: double");
-    videoElRGB.setAttribute("muted", "false");
-    videoElRGB.setAttribute("autoplay", "true");
-    videoElRGB.setAttribute("playsinline", "true");
-    videoElRGB.setAttribute("material", "src", "#video_rgb");
-    sceneEl.appendChild(videoElRGB);
+        const sceneEl = document.querySelector("a-scene");
 
-    const videoElD = document.createElement("a-entity");
-    videoElD.setAttribute("geometry", "primitive", "plane");
-    videoElD.setAttribute("rotation.order", "YXZ");
-    videoElD.setAttribute("id", "depth");
-    videoElD.setAttribute("scale", "4 2.25 0.01");
-    videoElD.setAttribute("position", "8 5 -6");
-    videoElD.setAttribute("material", "shader: flat; side: double");
-    videoElD.setAttribute("muted", "false");
-    videoElD.setAttribute("autoplay", "true");
-    videoElD.setAttribute("playsinline", "true");
-    videoElD.setAttribute("material", "src", "#video_d");
-    sceneEl.appendChild(videoElD);
+        const videoElRGB = document.createElement("a-entity");
+        videoElRGB.setAttribute("geometry", "primitive", "plane");
+        videoElRGB.setAttribute("rotation.order", "YXZ");
+        videoElRGB.setAttribute("id", "rgb");
+        videoElRGB.setAttribute("scale", "4 2.25 0.01");
+        videoElRGB.setAttribute("position", "-8 5 -6");
+        videoElRGB.setAttribute("material", "shader: flat; side: double");
+        videoElRGB.setAttribute("muted", "false");
+        videoElRGB.setAttribute("autoplay", "true");
+        videoElRGB.setAttribute("playsinline", "true");
+        videoElRGB.setAttribute("material", "src", "#video_rgb");
+        sceneEl.appendChild(videoElRGB);
 
-    let video = new POINTS.ARENA3DVideo(videoTagRGB, videoTagD, new THREE.Vector3(0, 2, -5));
-    let scene = new POINTS.PtCloudViewerScene();
-    scene.addStream(video);
+        const videoElD = document.createElement("a-entity");
+        videoElD.setAttribute("geometry", "primitive", "plane");
+        videoElD.setAttribute("rotation.order", "YXZ");
+        videoElD.setAttribute("id", "depth");
+        videoElD.setAttribute("scale", "4 2.25 0.01");
+        videoElD.setAttribute("position", "8 5 -6");
+        videoElD.setAttribute("material", "shader: flat; side: double");
+        videoElD.setAttribute("muted", "false");
+        videoElD.setAttribute("autoplay", "true");
+        videoElD.setAttribute("playsinline", "true");
+        videoElD.setAttribute("material", "src", "#video_d");
+        sceneEl.appendChild(videoElD);
+
+        let video = new POINTS.ARENA3DVideo(videoTagRGB, videoTagD, new THREE.Vector3(0, 2, -5));
+        let scene = new POINTS.PtCloudViewerScene();
+        scene.addStream(video);
+
+    }, 100);
 });
+
+// videoTagRGB.addEventListener('timeupdate', (event) => {
+//     videoTagD.currentTime = videoTagRGB.currentTime;
+// });

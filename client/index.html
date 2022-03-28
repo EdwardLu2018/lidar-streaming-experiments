@@ -16,23 +16,25 @@
 
     <video
         id="video_rgb"
-        width="480"
+        width="240"
         controls
         autoplay="1"
         crossorigin="anonymous"
         playsinline="1"
+        muted="muted"
         type="application/x-mpegURL"
-        style="display: none;">
+        style="display: block; position: fixed; z-index: 10000;">
     </video>
     <video
         id="video_d"
-        width="480"
+        width="240"
         controls
         autoplay="1"
         crossorigin="anonymous"
         playsinline="1"
+        muted="muted"
         type="application/x-mpegURL"
-        style="display: none;">
+        style="display: block; position: fixed; left: 240px; z-index: 10000;">
     </video>
 
     <a-scene background="color: gray">
