@@ -3,10 +3,19 @@
 <head>
   <title>Live Cam</title>
 </head>
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script src="dist/dash.min.js"></script>
 <body>
-  <video id="video" width="720" autoplay="true" controls="controls">
-    <source src="https://arena-dev1.conix.io/dev/lidar_rgb/dash/stream.mpd">
-  </video>
+  <video id="video" width="240" controls autoplay="1" muted="1" crossorigin="anonymous" playsinline="1" type="application/x-mpegURL"></video>
+  <video id="video2" width="240" controls autoplay="1" muted="1" crossorigin="anonymous" playsinline="1" type="application/x-mpegURL" style="left:240px"></video>
+
+  <script>
+    var url = "https://arena-dev1.conix.io/dev/lidar_rgb/dash/stream_rgb.mpd";
+    var player = dashjs.MediaPlayer().create();
+    player.initialize(document.querySelector("#video"), url, true);
+
+    var url2 = "https://arena-dev1.conix.io/dev/lidar_rgb/dash/stream_d.mpd";
+    var player2 = dashjs.MediaPlayer().create();
+    player2.initialize(document.querySelector("#video2"), url2, true);
+  </script>
 </body>
 </html>
