@@ -7,8 +7,36 @@ const startEvent = new CustomEvent('start', {
     detail: {}
 });
 
-var videoTagRGB = document.getElementById("video_rgb");
-var videoTagD = document.getElementById("video_d");
+var videoTagRGB = document.createElement("video");
+videoTagRGB.setAttribute("width", "240px");
+videoTagRGB.setAttribute("id", "video_rgb");
+videoTagRGB.setAttribute("controls", "1");
+videoTagRGB.setAttribute("autoplay", "1");
+videoTagRGB.setAttribute("crossorigin", "anonymous");
+videoTagRGB.setAttribute("playsinline", "1");
+videoTagRGB.setAttribute("muted", "muted");
+videoTagRGB.setAttribute("type", "application/x-mpegURL");
+videoTagRGB.style.display = "none";
+videoTagRGB.style.position = "fixed";
+videoTagRGB.style.left = "0px";
+videoTagRGB.style.zIndex = "10000";
+document.body.appendChild(videoTagRGB);
+
+var videoTagD = document.createElement("video");
+videoTagD.setAttribute("width", "240px");
+videoTagD.setAttribute("id", "video_d");
+videoTagD.setAttribute("controls", "1");
+videoTagD.setAttribute("autoplay", "1");
+videoTagD.setAttribute("crossorigin", "anonymous");
+videoTagD.setAttribute("playsinline", "1");
+videoTagD.setAttribute("muted", "muted");
+videoTagD.setAttribute("type", "application/x-mpegURL");
+videoTagD.style.display = "none";
+videoTagD.style.position = "fixed";
+videoTagD.style.left = "240px";
+videoTagD.style.zIndex = "10000";
+document.body.appendChild(videoTagD);
+
 if (Hls.isSupported()) {
     var hlsRGB = new Hls();
     hlsRGB.loadSource(URL_RGB);

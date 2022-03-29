@@ -72,7 +72,7 @@ void main() {
         return;
     }
 
-    float depth = 0.05 * getPixelDepth(pt);
+    float depth = 0.1 * getPixelDepth(pt);
     vec3 ptPos = 0.005 * scale * vec3(
         float(ptX) - float(frameSize.x / 2),
         float(ptY) - float(frameSize.y / 2),
