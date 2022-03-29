@@ -1,4 +1,3 @@
-
 const URL_RGB = "https://arena-dev1.conix.io/dev/lidar_rgb/hls/stream_rgb.m3u8";
 const URL_D = "https://arena-dev1.conix.io/dev/lidar_rgb/hls/stream_d.m3u8";
 
@@ -37,6 +36,7 @@ videoTagD.style.left = "240px";
 videoTagD.style.zIndex = "10000";
 document.body.appendChild(videoTagD);
 
+var supportsHLS = false;
 if (Hls.isSupported()) {
     var hlsRGB = new Hls();
     hlsRGB.loadSource(URL_RGB);
@@ -61,6 +61,8 @@ if (Hls.isSupported()) {
     videoTagD.onloadedmetadata = function() {
         window.dispatchEvent(startEvent);
     }
+
+    supportsHLS = true;
 }
 else if (videoTagRGB.canPlayType("application/vnd.apple.mpegurl")) {
     videoTagRGB.src = URL_RGB;
@@ -72,11 +74,14 @@ else if (videoTagRGB.canPlayType("application/vnd.apple.mpegurl")) {
     videoTagD.addEventListener("loadedmetadata", function() {
         window.dispatchEvent(startEvent);
     });
+
+    supportsHLS = false;
 }
 
 window.addEventListener("start", function() {
     readyCntr++;
-    if (readyCntr < 4) return;
+    if (supportsHLS && readyCntr < 4) return;
+    if (!supportsHLS && readyCntr < 2) return;
     console.log("Started!");
 
     setTimeout(() => {
