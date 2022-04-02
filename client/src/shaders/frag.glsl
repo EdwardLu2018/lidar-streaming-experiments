@@ -3,8 +3,7 @@ varying vec2 vPtPos;
 varying float vShouldDiscard;
 
 uniform ivec2 texSize;
-uniform sampler2D texImgRGB;
-uniform sampler2D texImgD;
+uniform sampler2D texImgRGBD;
 
 void main() {
     vec2 frameSizeF = vec2(texSize.x, texSize.y);
@@ -17,7 +16,7 @@ void main() {
     }
 
     vec2 lookupPt = vec2(vPtPos.x, vPtPos.y) / vec2(texSize);
-    vec3 currColor = texture2D(texImgRGB, lookupPt).rgb;
+    vec3 currColor = texture2D(texImgRGBD, lookupPt).rgb;
 
     gl_FragColor = vec4(currColor, 1.0);
 }

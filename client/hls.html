@@ -6,39 +6,23 @@
 <script src="dist/hls.js"></script>
 <body>
   <script>
-    const URL_RGB = "https://arena-dev1.conix.io/dev/lidar_rgb/hls/stream_rgb.m3u8";
-    const URL_D = "https://arena-dev1.conix.io/dev/lidar_rgb/hls/stream_d.m3u8";
+    const URL_RGBD = "https://arena-dev1.conix.io/dev/lidar_rgb/hls/stream_rgbd_1080p.m3u8";
     const URL_BUNNY = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8";
 
-    var videoTagRGB = document.createElement("video");
-    videoTagRGB.setAttribute("width", "240px");
-    videoTagRGB.setAttribute("id", "video_rgb");
-    videoTagRGB.setAttribute("controls", "1");
-    videoTagRGB.setAttribute("autoplay", "1");
-    videoTagRGB.setAttribute("crossorigin", "anonymous");
-    videoTagRGB.setAttribute("playsinline", "1");
-    videoTagRGB.setAttribute("muted", "muted");
-    videoTagRGB.setAttribute("type", "application/x-mpegURL");
-    videoTagRGB.style.display = "block";
-    videoTagRGB.style.position = "fixed";
-    videoTagRGB.style.left = "0px";
-    videoTagRGB.style.zIndex = "10000";
-    document.body.appendChild(videoTagRGB);
-
-    var videoTagD = document.createElement("video");
-    videoTagD.setAttribute("width", "240px");
-    videoTagD.setAttribute("id", "video_d");
-    videoTagD.setAttribute("controls", "1");
-    videoTagD.setAttribute("autoplay", "1");
-    videoTagD.setAttribute("crossorigin", "anonymous");
-    videoTagD.setAttribute("playsinline", "1");
-    videoTagD.setAttribute("muted", "muted");
-    videoTagD.setAttribute("type", "application/x-mpegURL");
-    videoTagD.style.display = "block";
-    videoTagD.style.position = "fixed";
-    videoTagD.style.left = "240px";
-    videoTagD.style.zIndex = "10000";
-    document.body.appendChild(videoTagD);
+    var videoTagRGBD = document.createElement("video");
+    videoTagRGBD.setAttribute("width", "480");
+    videoTagRGBD.setAttribute("id", "video_rgbd");
+    videoTagRGBD.setAttribute("controls", "1");
+    videoTagRGBD.setAttribute("autoplay", "1");
+    videoTagRGBD.setAttribute("crossorigin", "anonymous");
+    videoTagRGBD.setAttribute("playsinline", "1");
+    videoTagRGBD.setAttribute("muted", "muted");
+    videoTagRGBD.setAttribute("type", "application/x-mpegURL");
+    videoTagRGBD.style.display = "block";
+    videoTagRGBD.style.position = "fixed";
+    videoTagRGBD.style.left = "0px";
+    videoTagRGBD.style.zIndex = "10000";
+    document.body.appendChild(videoTagRGBD);
 
     var videoTagBunny = document.createElement("video");
     videoTagBunny.setAttribute("width", "240px");
@@ -55,17 +39,19 @@
     videoTagBunny.style.zIndex = "10000";
     document.body.appendChild(videoTagBunny);
 
-    if (Hls.isSupported()) {
-        var hlsRGB = new Hls();
-        hlsRGB.loadSource(URL_RGB);
-        hlsRGB.attachMedia(videoTagRGB);
-        hlsRGB.on(Hls.Events.MANIFEST_PARSED, function() {
-        });
+    if (videoTagRGBD.canPlayType("application/vnd.apple.mpegurl")) {
+        videoTagRGBD.src = URL_RGBD;
+        videoTagBunny.src = URL_BUNNY;
 
-        var hlsD = new Hls();
-        hlsD.loadSource(URL_D);
-        hlsD.attachMedia(videoTagD);
-        hlsD.on(Hls.Events.MANIFEST_PARSED, function() {
+        videoTagRGBD.onloadedmetadata = function() {
+            videoTagRGBD.play();
+        }
+    }
+    else if (Hls.isSupported()) {
+        var hlsRGBD = new Hls();
+        hlsRGBD.loadSource(URL_RGBD);
+        hlsRGBD.attachMedia(videoTagRGBD);
+        hlsRGBD.on(Hls.Events.MANIFEST_PARSED, function() {
         });
 
         var hlsBunny = new Hls();
@@ -73,11 +59,6 @@
         hlsBunny.attachMedia(videoTagBunny);
         hlsBunny.on(Hls.Events.MANIFEST_PARSED, function() {
         });
-    }
-    else if (videoTagRGB.canPlayType("application/vnd.apple.mpegurl")) {
-        videoTagRGB.src = URL_RGB;
-        videoTagD.src = URL_D;
-        videoTagBunny.src = URL_BUNNY;
     }
   </script>
 </body>

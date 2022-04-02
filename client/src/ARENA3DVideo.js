@@ -3,25 +3,23 @@ import {PointCloudShaderMaterial} from './PointCloudShaderMaterial';
 import {RenderingMode} from './constants'
 
 export class ARENA3DVideo {
-    constructor(source, sourceDepth, position) {
+    constructor(source, width, height, position) {
         this.source = null;
-        this.sourceDepth = null;
 
         this.object3D = new THREE.Group();
         this.object3D.position.set(position.x, position.y, position.z);
 
-        this.width = 1920;
-        this.height = 1080;
+        this.width = width;
+        this.height = height;
 
         this.renderingMode = RenderingMode.POINTS;
         this.material = PointCloudShaderMaterial.create();
-        this.setSource(source, sourceDepth);
+        this.setSource(source);
     }
 
-    setSource(source, sourceDepth) {
-        if ( source !== this.source || sourceDepth !== this.sourceDepth ) {
+    setSource(source) {
+        if ( source !== this.source ) {
             this.source = source;
-            this.sourceDepth = sourceDepth;
             this.onSourceChanged();
         }
 
@@ -29,25 +27,17 @@ export class ARENA3DVideo {
     }
 
     onSourceChanged() {
-        let videoTagRGB = this.source;
-        let videoTagD = this.sourceDepth;
+        let videoTagRGBD = this.source;
 
-        this.videoTextureRGB = new THREE.VideoTexture( videoTagRGB );
-        this.videoTextureRGB.minFilter = THREE.LinearFilter;
-        this.videoTextureRGB.magFilter = THREE.LinearFilter;
-        this.videoTextureRGB.format = THREE.RGBAFormat;
+        this.videoTextureRGBD = new THREE.VideoTexture( videoTagRGBD );
+        this.videoTextureRGBD.minFilter = THREE.LinearFilter;
+        this.videoTextureRGBD.magFilter = THREE.LinearFilter;
+        this.videoTextureRGBD.format = THREE.RGBAFormat;
 
-        this.videoTextureD = new THREE.VideoTexture( videoTagD );
-        this.videoTextureD.minFilter = THREE.LinearFilter;
-        this.videoTextureD.magFilter = THREE.LinearFilter;
-        this.videoTextureD.format = THREE.RGBAFormat;
-
-        // videoTagRGB.play();
-        // videoTagD.play();
+        videoTagRGBD.play();
 
         this.material.uniforms.texSize.value = [this.width, this.height];
-        this.material.uniforms.texImgRGB.value = this.videoTextureRGB;
-        this.material.uniforms.texImgD.value = this.videoTextureD;
+        this.material.uniforms.texImgRGBD.value = this.videoTextureRGBD;
 
         this.switchRenderingTo(this.renderingMode);
     }

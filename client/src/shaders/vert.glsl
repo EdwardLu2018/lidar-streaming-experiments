@@ -5,8 +5,7 @@ varying vec2 vPtPos;
 varying float vShouldDiscard;
 
 uniform ivec2 texSize;
-uniform sampler2D texImgRGB;
-uniform sampler2D texImgD;
+uniform sampler2D texImgRGBD;
 uniform float scale;
 uniform float ptSize;
 
@@ -20,10 +19,10 @@ const float s = 256.0; // 2^8
 
 float getPixelDepth(ivec2 pixel) {
     vec2 lookupPt = vec2(pixel) / vec2(texSize);
-    vec3 depthRGB = 255.0 * texture2D(texImgD, lookupPt).rgb;
+    vec3 depthRGB = 255.0 * texture2D(texImgRGBD, lookupPt).rgb;
 
     float depth = (depthRGB.g * s) + depthRGB.b; // (g << 8) + b
-    return depth;
+    return depth * 0.001;
 }
 
 bool shouldDiscard(ivec2 currPixel) {
@@ -52,7 +51,7 @@ bool shouldDiscard(ivec2 currPixel) {
 void main() {
     vShouldDiscard = 0.0;
 
-    ivec2 frameSize = ivec2(texSize.x, texSize.y);
+    ivec2 frameSize = ivec2(texSize.x / 2, texSize.y);
     int vertIdx = int(vertexIdx);
 
     int actualNumPts = frameSize.x * frameSize.y;
@@ -64,7 +63,7 @@ void main() {
 
     int ptY = vertIdx / int(frameSize.x);
     int ptX = vertIdx - ptY * int(frameSize.x);
-    ivec2 pt = ivec2(ptX, ptY);
+    ivec2 pt = ivec2(ptX + frameSize.x, ptY);
 
     if ( shouldDiscard( pt ) ) {
         vShouldDiscard = 1.0;
@@ -72,7 +71,7 @@ void main() {
         return;
     }
 
-    float depth = 0.1 * getPixelDepth(pt);
+    float depth = 75.0 * getPixelDepth(pt);
     vec3 ptPos = 0.005 * scale * vec3(
         float(ptX) - float(frameSize.x / 2),
         float(ptY) - float(frameSize.y / 2),
