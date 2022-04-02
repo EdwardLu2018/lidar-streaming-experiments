@@ -9,8 +9,7 @@ export class ARENA3DVideo {
         this.object3D = new THREE.Group();
         this.object3D.position.set(position.x, position.y, position.z);
 
-        this.width = width;
-        this.height = height;
+        this.setResolution(width, height);
 
         this.renderingMode = RenderingMode.POINTS;
         this.material = PointCloudShaderMaterial.create();
@@ -24,6 +23,11 @@ export class ARENA3DVideo {
         }
 
         this.switchRenderingTo(this.renderingMode);
+    }
+
+    setResolution(width, height) {
+        this.width = width;
+        this.height = height;
     }
 
     onSourceChanged() {

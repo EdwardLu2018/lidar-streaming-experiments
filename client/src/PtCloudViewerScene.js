@@ -10,13 +10,13 @@ export class PtCloudViewerScene {
         this.options = {
             modelScale: 1.0,
             modelPointSize: 1.0,
-            toggleMeshPoints: () => {
-                for (let ptCloud of self.pointClouds) {
-                    let newRenderingMode = ptCloud.renderingMode === RenderingMode.MESH ?
-                                                RenderingMode.POINTS : RenderingMode.MESH;
-                    ptCloud.switchRenderingTo(newRenderingMode);
-                }
-            }
+            // toggleMeshPoints: () => {
+            //     for (let ptCloud of self.pointClouds) {
+            //         let newRenderingMode = ptCloud.renderingMode === RenderingMode.MESH ?
+            //                                     RenderingMode.POINTS : RenderingMode.MESH;
+            //         ptCloud.switchRenderingTo(newRenderingMode);
+            //     }
+            // }
         };
         let gui = new dat.gui.GUI();
         gui.add(this.options, 'modelScale').min(1).max(20).step(0.1)
@@ -35,13 +35,15 @@ export class PtCloudViewerScene {
                 }
             });
 
-        gui.add(this.options, 'toggleMeshPoints').name('Render points/mesh');
+        // gui.add(this.options, 'toggleMeshPoints').name('Render points/mesh');
     }
 
     addStream(lidarStream) {
         this.pointClouds.push(lidarStream);
-        // this.mainScene.add(lidarStream.object3D);
-        document.querySelector('a-scene').object3D.add(lidarStream.object3D);
+        var sceneEl = document.querySelector("a-scene");
+        sceneEl.object3D.add(lidarStream.object3D);
+        // var camera = document.getElementById("my-camera");
+        // camera.object3D.add(lidarStream.object3D);
     }
 
     toggleSound() {
