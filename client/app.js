@@ -14,6 +14,7 @@ function createVideo() {
     var videoEl = document.createElement("video");
     videoEl.setAttribute("controls", "");
     videoEl.setAttribute("playsinline", "");
+    videoEl.setAttribute("webkit-playsinline", "");
     videoEl.setAttribute("type", "application/x-mpegURL");
     videoEl.id = "video-rgbd";
     videoEl.autoplay = true;

@@ -64,7 +64,7 @@ export class ARENA3DVideo {
     switchRenderingToPoints() {
         this.removeObject3DChildren();
 
-        let numPoints = this.width * this.height;
+        let numPoints = this.width * this.height / 2;
 
         this.buffIndices = new Uint32Array(numPoints);
         this.buffPointIndicesAttr = new Float32Array(numPoints);
