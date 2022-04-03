@@ -11,6 +11,7 @@ uniform float ptSize;
 
 #define FILTER 0
 
+
 // Filtering constants
 const int filterSize = 1;
 const float distThresholdFilter = 1.0;

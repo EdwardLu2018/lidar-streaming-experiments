@@ -3,13 +3,11 @@ import {PointCloudShaderMaterial} from './PointCloudShaderMaterial';
 import {RenderingMode} from './constants'
 
 export class ARENA3DVideo {
-    constructor(source, width, height, position) {
+    constructor(source, position) {
         this.source = null;
 
         this.object3D = new THREE.Group();
         this.object3D.position.set(position.x, position.y, position.z);
-
-        this.setResolution(width, height);
 
         this.renderingMode = RenderingMode.POINTS;
         this.material = PointCloudShaderMaterial.create();
@@ -25,13 +23,11 @@ export class ARENA3DVideo {
         this.switchRenderingTo(this.renderingMode);
     }
 
-    setResolution(width, height) {
-        this.width = width;
-        this.height = height;
-    }
-
     onSourceChanged() {
         let videoTagRGBD = this.source;
+
+        this.width = videoTagRGBD.videoWidth;
+        this.height = videoTagRGBD.videoHeight;
 
         this.videoTextureRGBD = new THREE.VideoTexture( videoTagRGBD );
         this.videoTextureRGBD.minFilter = THREE.LinearFilter;

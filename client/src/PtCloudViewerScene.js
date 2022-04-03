@@ -1,4 +1,4 @@
-import {RenderingMode} from './constants'
+import {RenderingMode} from "./constants"
 
 export class PtCloudViewerScene {
     constructor() {
@@ -17,9 +17,15 @@ export class PtCloudViewerScene {
             //         ptCloud.switchRenderingTo(newRenderingMode);
             //     }
             // }
+            toggleStats: () => {
+                var sceneEl = document.querySelector("a-scene");
+                if (sceneEl.hasAttribute("stats")) sceneEl.removeAttribute("stats");
+                else sceneEl.setAttribute("stats", "")
+            }
         };
+
         let gui = new dat.gui.GUI();
-        gui.add(this.options, 'modelScale').min(1).max(20).step(0.1)
+        gui.add(this.options, "modelScale").min(1).max(20).step(0.1)
             .onChange(() => {
                 for (let ptCloud of self.pointClouds)
                 {
@@ -27,7 +33,7 @@ export class PtCloudViewerScene {
                 }
             });
 
-        gui.add(this.options, 'modelPointSize').min(0.1).max(20).step(0.1)
+        gui.add(this.options, "modelPointSize").min(0.1).max(20).step(0.1)
             .onChange(() => {
                 for (let ptCloud of self.pointClouds)
                 {
@@ -35,7 +41,8 @@ export class PtCloudViewerScene {
                 }
             });
 
-        // gui.add(this.options, 'toggleMeshPoints').name('Render points/mesh');
+        // gui.add(this.options, "toggleMeshPoints").name("Render points/mesh");
+        gui.add(this.options, "toggleStats").name("Toggle Stats");
     }
 
     addStream(lidarStream) {
